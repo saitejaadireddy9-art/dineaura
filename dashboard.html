@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>DineAura Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="dashboard-page">
+
+    <div id="customerDashboard" class="dashboard customer-dashboard-v2">
+        <aside class="admin-sidebar cust-sidebar">
+            <div class="sidebar-brand">
+                <div class="logo">DineAura</div>
+                <span>My Dashboard</span>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-item active" id="custNavHome" onclick="showCustomerTab('home', this)">
+                    <span class="icon">&#127968;</span> Overview
+                </button>
+                <button class="nav-item" id="custNavOrder" onclick="showCustomerTab('order', this)">
+                    <span class="icon">&#128203;</span> Order Menu
+                </button>
+                <button class="nav-item" id="custNavHistory" onclick="showCustomerTab('history', this)">
+                    <span class="icon">&#128338;</span> Order History
+                </button>
+                <button class="nav-item" id="custNavBookings" onclick="showCustomerTab('bookings', this)">
+                    <span class="icon">&#128197;</span> My Bookings
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="admin-profile">
+                    <div class="avatar" id="custAvatar">G</div>
+                    <div class="info">
+                        <span id="custNameDisplay">Guest</span>
+                        <span class="role" id="custRoleDisplay">Dine-In</span>
+                    </div>
+                </div>
+                <button id="custLogoutBtn" class="logout-btn">
+                    <span class="icon">&#128682;</span> Logout
+                </button>
+            </div>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-topbar">
+                <h2 id="custTabTitle">Welcome Back</h2>
+                <div class="topbar-actions">
+                    <button onclick="showCustomerTab('order', document.getElementById('custNavOrder'))"
+                        class="hero-btn-primary" style="font-size:13px;padding:10px 24px;">+ Place Order</button>
+                </div>
+            </header>
+
+            <section class="admin-content-area">
+                <!-- Overview -->
+                <div class="cust-panel" id="custHomePanel">
+                    <div class="cust-welcome-card">
+                        <div>
+                            <h3 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:6px;">Welcome,
+                                <span id="custWelcomeName">Guest</span>! 👋
+                            </h3>
+                            <p style="color:var(--text-muted);font-size:14px;">Here's a summary of your DineAura
+                                activity.</p>
+                        </div>
+                        <div class="cust-stats-row">
+                            <div class="cust-stat-box"><span class="stat-num" id="custTotalOrders">0</span><span
+                                    class="stat-label">Orders</span></div>
+                            <div class="cust-stat-box"><span class="stat-num" id="custActiveOrders">0</span><span
+                                    class="stat-label">Active</span></div>
+                            <div class="cust-stat-box"><span class="stat-num" id="custTotalSpent">£0</span><span
+                                    class="stat-label">Spent</span></div>
+                        </div>
+                    </div>
+                    <h4
+                        style="color:var(--text-muted);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;">
+                        Recent Orders</h4>
+                    <div id="custRecentOrders" class="orders-grid"></div>
+
+                    <!-- Profile Info Card -->
+                    <div id="custProfileCard" style="margin-top:32px;">
+                        <h4
+                            style="color:var(--text-muted);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;">
+                            My Profile</h4>
+                        <div
+                            style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:14px;max-width:480px;">
+                            <div style="display:flex;align-items:center;gap:12px;">
+                                <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--gold-primary),#b89028);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:var(--bg-primary);flex-shrink:0;"
+                                    id="custProfileAvatar">G</div>
+                                <div>
+                                    <div style="font-weight:700;font-size:16px;" id="custProfileName">Guest</div>
+                                    <div style="font-size:12px;color:var(--text-muted);" id="custProfileType">Dine-In
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                style="border-top:1px solid var(--border-subtle);padding-top:14px;display:flex;flex-direction:column;gap:10px;">
+                                <div
+                                    style="display:flex;justify-content:space-between;align-items:center;font-size:14px;">
+                                    <span style="color:var(--text-muted);">📞 Contact</span>
+                                    <span id="custProfileEmail"
+                                        style="color:var(--text-primary);font-weight:500;">—</span>
+                                </div>
+                                <div
+                                    style="display:flex;justify-content:space-between;align-items:center;font-size:14px;">
+                                    <span style="color:var(--text-muted);">🪑 Table / Room</span>
+                                    <span id="custProfileIdentifier"
+                                        style="color:var(--gold-primary);font-weight:600;">—</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Menu -->
+                <div class="cust-panel" id="custOrderPanel" style="display:none">
+                    <div class="order-layout">
+                        <div class="menu-section">
+                            <input id="custOrderSearch" type="search" placeholder="Search dishes, drinks..."
+                                class="cust-search-input">
+                            <div id="custMenuItems" class="cust-menu-grid"></div>
+                        </div>
+                        <div class="cart-section">
+                            <div class="cart-header">
+                                <h3>🛒 Your Cart</h3>
+                                <span id="custCartCount" class="cart-badge">0</span>
+                            </div>
+                            <div id="custCartItems" class="cart-body">
+                                <div class="cart-empty"><span style="font-size:36px;">🛒</span>
+                                    <p>Cart is empty</p>
+                                </div>
+                            </div>
+                            <div class="cart-footer">
+                                <div class="cart-total-row"><span>Total</span><strong id="custCartTotal">£0.00</strong>
+                                </div>
+                                <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">Table/Room:
+                                    <strong id="custIdentifierDisplay">--</strong></p>
+                                <button id="custPlaceOrderBtn" class="hero-btn-primary"
+                                    style="width:100%;text-align:center;border:none;cursor:pointer;">Confirm Order
+                                    →</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order History -->
+                <div class="cust-panel" id="custHistoryPanel" style="display:none">
+                    <div id="custHistoryGrid" class="orders-grid">
+                        <p style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:40px;">Loading
+                            orders...</p>
+                    </div>
+                </div>
+
+                <!-- Bookings -->
+                <div class="cust-panel" id="custBookingsPanel" style="display:none">
+                    <div style="display:flex;gap:10px;margin-bottom:24px;">
+                        <button class="filter-btn active" id="bkFilterUpcoming"
+                            onclick="filterBookings('upcoming', this)">Upcoming</button>
+                        <button class="filter-btn" id="bkFilterPast"
+                            onclick="filterBookings('past', this)">Past</button>
+                    </div>
+                    <div id="custBookingsGrid" class="orders-grid">
+                        <p style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:40px;">Loading
+                            bookings...</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        /* ── Customer Dashboard Logic ── */
+        let custCart = {};
+        let custAllBookings = [];
+
+        window.showCustomerTab = function (tab, btn) {
+            document.querySelectorAll('.cust-panel').forEach(p => p.style.display = 'none');
+            document.querySelectorAll('#customerDashboard .nav-item').forEach(b => b.classList.remove('active'));
+            const titles = { home: 'Overview', order: 'Order Menu', history: 'Order History', bookings: 'My Bookings' };
+            const el = document.getElementById('custTabTitle');
+            if (el) el.textContent = titles[tab] || tab;
+            const panel = document.getElementById('cust' + tab.charAt(0).toUpperCase() + tab.slice(1) + 'Panel');
+            if (panel) panel.style.display = 'block';
+            if (btn) btn.classList.add('active');
+            if (tab === 'home') loadCustOverview();
+            if (tab === 'order') loadCustMenu();
+            if (tab === 'history') loadCustHistory();
+            if (tab === 'bookings') loadCustBookings();
+        };
+
+        async function loadCustOverview() {
+            const profileAvatar = document.getElementById('custProfileAvatar');
+            const profileName = document.getElementById('custProfileName');
+            const profileType = document.getElementById('custProfileType');
+            const profileEmail = document.getElementById('custProfileEmail');
+            const profileId = document.getElementById('custProfileIdentifier');
+
+            if (profileAvatar) profileAvatar.textContent = (currentUser || 'G').charAt(0).toUpperCase();
+            if (profileName) profileName.textContent = currentUser || '—';
+            if (profileType) profileType.textContent = currentUserType === 'room' ? 'Hotel Room' : 'Dine-In';
+            if (profileEmail) profileEmail.textContent = currentUserEmail || '—';
+            if (profileId) profileId.textContent = currentUserIdentifier || '—';
+
+            try {
+                const res = await fetch('/api/orders');
+                const all = res.ok ? await res.json() : [];
+                const mine = all.filter(o => o.user === currentUser);
+                document.getElementById('custTotalOrders').textContent = mine.length;
+                document.getElementById('custActiveOrders').textContent = mine.filter(o => o.status !== 'delivered').length;
+                const spent = mine.reduce((s, o) => s + (o.total || 0), 0);
+                document.getElementById('custTotalSpent').textContent = '£' + spent.toFixed(2);
+
+                const recent = mine.sort((a, b) => new Date(b.time) - new Date(a.time)).slice(0, 4);
+                const grid = document.getElementById('custRecentOrders');
+                if (!recent.length) { grid.innerHTML = '<p style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:30px;">No orders yet — place your first order!</p>'; return; }
+                grid.innerHTML = recent.map(o => {
+                    const sc = o.status === 'delivered' ? '#4caf50' : o.status === 'ready' ? '#ff9800' : '#c59d5f';
+                    return `<div style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:16px;padding:20px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                            <span style="font-size:12px;font-weight:700;color:var(--gold-primary);background:rgba(212,175,55,0.1);padding:3px 10px;border-radius:50px;">#${o.id.slice(-6).toUpperCase()}</span>
+                            <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;background:${sc}22;color:${sc};">${o.status}</span>
+                        </div>
+                        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:10px;">${o.items.map(i => i.name).join(', ')}</div>
+                        <div style="display:flex;justify-content:space-between;">
+                            <span style="font-size:12px;color:var(--text-muted);">${new Date(o.time).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</span>
+                            <strong style="color:var(--gold-primary);">£${o.total.toFixed(2)}</strong>
+                        </div>
+                    </div>`;
+                }).join('');
+            } catch (e) { document.getElementById('custRecentOrders').innerHTML = '<p style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:30px;">Unable to load. Ensure server is running.</p>'; }
+        }
+
+        function loadCustMenu() {
+            const grid = document.getElementById('custMenuItems');
+            const idSpan = document.getElementById('custIdentifierDisplay');
+            if (idSpan) idSpan.textContent = currentUserIdentifier || '--';
+            let html = '';
+            Object.entries(MENU_DATA).forEach(([cat, items]) => {
+                html += `<div style="grid-column:1/-1;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold-primary);margin:20px 0 10px;padding-bottom:8px;border-bottom:1px solid var(--border-subtle);">${cat}</div>`;
+                items.forEach(item => {
+                    html += `<div class="cust-menu-card" style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:10px;transition:transform 0.2s,border-color 0.2s;" onmouseover="this.style.transform='translateY(-3px)';this.style.borderColor='var(--gold-primary)'" onmouseout="this.style.transform='translateY(0)';this.style.borderColor='var(--border-subtle)'">
+                        <div style="font-weight:600;font-size:15px;color:var(--text-primary);">${item.name}</div>
+                        <div style="font-size:18px;font-weight:800;color:var(--gold-primary);">£${item.price.toFixed(2)}</div>
+                        <button onclick="custAddToCart('${item.id}','${item.name}',${item.price})" style="background:var(--gold-primary);color:var(--bg-primary);border:none;border-radius:8px;padding:8px;font-weight:700;font-size:13px;cursor:pointer;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">+ Add to Cart</button>
+                    </div>`;
+                });
+            });
+            grid.innerHTML = html;
+
+            const search = document.getElementById('custOrderSearch');
+            if (search) search.oninput = function () {
+                const q = this.value.toLowerCase();
+                document.querySelectorAll('.cust-menu-card').forEach(c => {
+                    const n = c.querySelector('div').textContent.toLowerCase();
+                    c.style.display = n.includes(q) ? '' : 'none';
+                });
+            };
+        }
+
+        window.custAddToCart = function (id, name, price) {
+            if (!custCart[id]) custCart[id] = { name, price, qty: 0 };
+            custCart[id].qty++;
+            updateCustCart();
+        };
+
+        function updateCustCart() {
+            let total = 0, count = 0;
+            const body = document.getElementById('custCartItems');
+            const entries = Object.entries(custCart);
+            if (!entries.length) {
+                body.innerHTML = '<div class="cart-empty"><span style="font-size:36px;">🛒</span><p>Cart is empty</p></div>';
+                document.getElementById('custCartCount').textContent = '0';
+                document.getElementById('custCartTotal').textContent = '£0.00';
+                return;
+            }
+            body.innerHTML = entries.map(([id, item]) => {
+                const sub = item.price * item.qty;
+                total += sub; count += item.qty;
+                return `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border-subtle);">
+                    <div>
+                        <div style="font-size:14px;font-weight:600;">${item.name}</div>
+                        <div style="font-size:12px;color:var(--text-muted);">£${item.price.toFixed(2)} each</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <button onclick="custUpdateQty('${id}',-1)" style="width:26px;height:26px;border-radius:50%;border:1px solid var(--border-subtle);background:var(--bg-secondary);color:var(--text-primary);cursor:pointer;font-size:16px;line-height:1;">-</button>
+                        <span style="min-width:20px;text-align:center;font-weight:700;">${item.qty}</span>
+                        <button onclick="custUpdateQty('${id}',1)" style="width:26px;height:26px;border-radius:50%;background:var(--gold-primary);border:none;color:var(--bg-primary);cursor:pointer;font-size:16px;line-height:1;">+</button>
+                        <span style="min-width:48px;text-align:right;font-size:13px;color:var(--gold-primary);font-weight:700;">£${sub.toFixed(2)}</span>
+                    </div>
+                </div>`;
+            }).join('');
+            document.getElementById('custCartCount').textContent = count;
+            document.getElementById('custCartTotal').textContent = '£' + total.toFixed(2);
+        }
+
+        window.custUpdateQty = function (id, change) {
+            custCart[id].qty += change;
+            if (custCart[id].qty <= 0) delete custCart[id];
+            updateCustCart();
+        };
+
+        async function loadCustHistory() {
+            const grid = document.getElementById('custHistoryGrid');
+            try {
+                const res = await fetch('/api/orders');
+                const all = res.ok ? await res.json() : [];
+                const mine = all.filter(o => o.user === currentUser).sort((a, b) => new Date(b.time) - new Date(a.time));
+                if (!mine.length) { grid.innerHTML = '<p style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:40px;">No orders yet!</p>'; return; }
+                grid.innerHTML = mine.map(o => {
+                    const sc = o.status === 'delivered' ? '#4caf50' : o.status === 'ready' ? '#ff9800' : '#c59d5f';
+                    const t = new Date(o.time).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                    const items = o.items.map(i => `<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-secondary);padding:3px 0;"><span>${i.name} ×${i.qty}</span><span>£${(i.price * i.qty).toFixed(2)}</span></div>`).join('');
+                    return `<div style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:16px;padding:20px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                            <span style="font-size:12px;font-weight:700;color:var(--gold-primary);background:rgba(212,175,55,0.1);padding:4px 10px;border-radius:50px;">#${o.id.slice(-6).toUpperCase()}</span>
+                            <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;background:${sc}22;color:${sc};">${o.status}</span>
+                        </div>
+                        <div style="border-bottom:1px solid var(--border-subtle);padding-bottom:12px;margin-bottom:12px;">${items}</div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;">
+                            <span style="font-size:12px;color:var(--text-muted);">🕐 ${t}</span>
+                            <strong style="font-size:18px;color:var(--gold-primary);">£${o.total.toFixed(2)}</strong>
+                        </div>
+                    </div>`;
+                }).join('');
+            } catch (e) { grid.innerHTML = '<p style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:40px;">Unable to load. Ensure server is running.</p>'; }
+        }
+
+        async function loadCustBookings() {
+            try {
+                const res = await fetch('/api/reservations');
+                custAllBookings = res.ok ? await res.json() : [];
+                filterBookings('upcoming', document.getElementById('bkFilterUpcoming'));
+            } catch (e) { document.getElementById('custBookingsGrid').innerHTML = '<p style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:40px;">Unable to load bookings.</p>'; }
+        }
+
+        window.filterBookings = function (type, btn) {
+            document.querySelectorAll('#custBookingsPanel .filter-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            const now = new Date();
+            const filtered = custAllBookings.filter(r => {
+                const d = new Date(r.date + ' ' + r.time);
+                return type === 'upcoming' ? d >= now : d < now;
+            });
+            const grid = document.getElementById('custBookingsGrid');
+            if (!filtered.length) { grid.innerHTML = `<p style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:40px;">No ${type} bookings found.</p>`; return; }
+            grid.innerHTML = filtered.map(r => `
+                <div style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:16px;padding:20px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                        <span style="font-size:12px;font-weight:700;color:var(--gold-primary);background:rgba(212,175,55,0.1);padding:4px 10px;border-radius:50px;">RES-${r.id.slice(-4)}</span>
+                        <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;background:rgba(76,175,80,0.1);color:#4caf50;">Confirmed</span>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--text-secondary);">
+                        <div style="display:flex;justify-content:space-between;"><span>Date</span><strong>${r.date}</strong></div>
+                        <div style="display:flex;justify-content:space-between;"><span>Time</span><strong>${r.time}</strong></div>
+                        <div style="display:flex;justify-content:space-between;"><span>Guests</span><strong>${r.guests}</strong></div>
+                        <div style="display:flex;justify-content:space-between;"><span>Name</span><strong>${r.name}</strong></div>
+                    </div>
+                </div>`).join('');
+        };
+
+        const MENU_DATA = {
+            'WINE': [
+                { id: 'wine-1', name: 'Prosecco (Sparkling)', price: 21.00 },
+                { id: 'wine-2', name: 'Taittinger Brut Reserve', price: 59.00 },
+                { id: 'wine-3', name: 'Solandia Grillo', price: 22.00 },
+            ],
+            'VODKA': [
+                { id: 'vodka-1', name: 'Smirnoff', price: 4.00 },
+                { id: 'vodka-2', name: 'Absolut Original', price: 4.20 },
+                { id: 'vodka-3', name: 'Grey Goose', price: 5.60 },
+            ],
+            'GIN': [
+                { id: 'gin-1', name: 'Gordon Gin', price: 4.00 },
+                { id: 'gin-2', name: 'Bombay Sapphire', price: 4.80 },
+                { id: 'gin-3', name: "Hendrick's Gin", price: 5.00 },
+            ],
+            'SOFT DRINKS': [
+                { id: 'soft-1', name: 'Coca Cola', price: 2.95 },
+                { id: 'soft-2', name: 'J2O (apple & mango)', price: 2.80 },
+                { id: 'soft-3', name: 'Tea / Coffee', price: 2.00 },
+            ]
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function () {
+            // Need to wait for script.js to load current user
+            const checkUser = setInterval(() => {
+                if (window.currentUser) {
+                    clearInterval(checkUser);
+                    loadCustOverview();
+                    // Populate avatar/name in sidebar
+                    document.getElementById('custAvatar').textContent = currentUser.charAt(0).toUpperCase();
+                    document.getElementById('custNameDisplay').textContent = currentUser;
+                    document.getElementById('custRoleDisplay').textContent = currentUserType === 'room' ? 'Hotel Room' : 'Dine-In';
+                }
+            }, 100);
+
+            const custPlaceBtn = document.getElementById('custPlaceOrderBtn');
+            if (custPlaceBtn) {
+                custPlaceBtn.onclick = async function () {
+                    if (!Object.keys(custCart).length) { alert('Your cart is empty!'); return; }
+                    const total = Object.values(custCart).reduce((s, i) => s + i.price * i.qty, 0);
+                    const items = Object.values(custCart);
+                    try {
+                        const res = await fetch('/api/orders', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items, total }) });
+                        if (res.ok) {
+                            alert('✓ Order placed! The kitchen will prepare it shortly.');
+                            custCart = {}; updateCustCart();
+                            showCustomerTab('home', document.getElementById('custNavHome'));
+                        } else {
+                            const d = await res.json(); alert(d.error || 'Failed to place order');
+                        }
+                    } catch (e) { alert('Server not available. Please try again.'); }
+                };
+            }
+
+            const custLogout = document.getElementById('custLogoutBtn');
+            if (custLogout) {
+                custLogout.onclick = async function () {
+                    try { await fetch('/api/auth/logout'); } catch (e) { }
+                    sessionStorage.clear(); window.location.href = 'index.html';
+                };
+            }
+        });
+    </script>
+</body>
+
+</html>

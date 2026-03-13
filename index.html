@@ -1,0 +1,350 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>DineAura &ndash; Fine Dining Restaurant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Header Section -->
+    <header class="header">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="logo">DineAura</div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="menu.html">Menu</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li id="navRegister"><a href="login.html?tab=register" class="btn ghost"
+                        style="text-decoration:none">Register</a></li>
+                <li id="navLogin"><a href="login.html" class="nav-login-btn" style="text-decoration:none">Login</a></li>
+                <li><button class="btn theme-toggle-btn" onclick="toggleTheme()"
+                        style="background:transparent; border:none; font-size:18px; cursor:pointer; padding: 0 8px;"
+                        title="Toggle Light/Dark Mode">☀️</button></li>
+            </ul>
+
+            <div class="user-widget" id="userWidget" style="display:none;">
+                <button class="user-btn" id="userBtn" aria-expanded="false">
+                    <div class="user-avatar" id="widgetAvatar">A</div>
+                    <div class="user-details">
+                        <span class="user-name" id="widgetUserName">Guest</span>
+                        <span class="user-role" id="widgetUserRole">Dine-In</span>
+                    </div>
+                    <svg fill="currentColor" viewBox="0 0 24 24" class="user-caret">
+                        <path d="M7 10l5 5 5-5z" />
+                    </svg>
+                </button>
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="dropdown-header">My Dashboard</div>
+                    <div class="dropdown-stat">
+                        <span>Identifier</span>
+                        <strong id="widgetIdentifier">--</strong>
+                    </div>
+                    <a href="#dashboard" class="dropdown-item" id="widgetDashboardBtn">&#127968; My Dashboard</a>
+                    <a href="#orderPage" class="dropdown-item" id="widgetOrderBtn">&#128203; Order Menu</a>
+                    <a href="#history" class="dropdown-item" id="widgetHistoryBtn">&#128338; View Orders</a>
+                    <a href="#bookings" class="dropdown-item" id="widgetBookingsBtn">&#128197; My Bookings</a>
+                    <div style="height:1px; background:rgba(255,255,255,0.05); margin: 4px 0;"></div>
+                    <button class="dropdown-item logout-item" id="widgetLogoutBtn">&#128682; Logout</button>
+                </div>
+            </div>
+        </nav>
+        <!-- Hero Content -->
+        <div class="hero-content">
+            <div class="hero-badge">✦ Award-Winning Fine Dining</div>
+            <h1>Taste the Art<br>of Fine Dining</h1>
+            <p>Authentic flavors crafted with passion, premium ingredients, and a luxurious ambiance that transforms
+                every meal into a memory.</p>
+            <div class="hero-cta">
+                <a href="#reservation" class="hero-btn-primary">Reserve a Table</a>
+                <a href="menu.html" class="hero-btn-ghost">View Menu</a>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat"><span class="hero-stat-num">15+</span><span class="hero-stat-label">Years of
+                        Excellence</span></div>
+                <div class="hero-stat-sep"></div>
+                <div class="hero-stat"><span class="hero-stat-num">4.9&#9733;</span><span class="hero-stat-label">Guest
+                        Rating</span></div>
+                <div class="hero-stat-sep"></div>
+                <div class="hero-stat"><span class="hero-stat-num">50k+</span><span class="hero-stat-label">Happy
+                        Guests</span></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Experience Strip -->
+    <section class="exp-strip">
+        <div class="exp-item">
+            <div class="exp-icon">&#127869;</div>
+            <div>
+                <div class="exp-title">Signature Tasting Menu</div>
+                <div class="exp-sub">7-course chef&apos;s journey</div>
+            </div>
+        </div>
+        <div class="exp-divider"></div>
+        <div class="exp-item">
+            <div class="exp-icon">&#127863;</div>
+            <div>
+                <div class="exp-title">Sommelier Curated Wines</div>
+                <div class="exp-sub">500+ label cellar</div>
+            </div>
+        </div>
+        <div class="exp-divider"></div>
+        <div class="exp-item">
+            <div class="exp-icon">&#128104;&#8205;&#127859;</div>
+            <div>
+                <div class="exp-title">World-Class Chefs</div>
+                <div class="exp-sub">Michelin-trained masters</div>
+            </div>
+        </div>
+        <div class="exp-divider"></div>
+        <div class="exp-item">
+            <div class="exp-icon">&#128367;</div>
+            <div>
+                <div class="exp-title">Private Dining Rooms</div>
+                <div class="exp-sub">For celebrations &amp; events</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery -->
+    <section class="gallery-section" id="gallery">
+        <div class="gallery-container">
+            <p class="section-eyebrow">Our Spaces &amp; Cuisine</p>
+            <h2>Discover Our Ambiance</h2>
+            <p class="gallery-subtitle">Every corner tells a story of elegance, passion, and unforgettable flavours</p>
+            <div class="gallery-masonry">
+                <div class="gm-item gm-tall"><img
+                        src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=85"
+                        alt="Elegant restaurant interior">
+                    <div class="gm-overlay"><span>Fine Dining Interior</span></div>
+                </div>
+                <div class="gm-item"><img
+                        src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=700&q=85"
+                        alt="Gourmet cuisine">
+                    <div class="gm-overlay"><span>Gourmet Cuisine</span></div>
+                </div>
+                <div class="gm-item"><img
+                        src="https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?auto=format&fit=crop&w=700&q=85"
+                        alt="Chef at work">
+                    <div class="gm-overlay"><span>Kitchen Artistry</span></div>
+                </div>
+                <div class="gm-item gm-wide"><img
+                        src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=1000&q=85"
+                        alt="Wine bar">
+                    <div class="gm-overlay"><span>Curated Wine Bar</span></div>
+                </div>
+                <div class="gm-item"><img
+                        src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=700&q=85"
+                        alt="Table setting">
+                    <div class="gm-overlay"><span>Table Experience</span></div>
+                </div>
+                <div class="gm-item"><img
+                        src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=700&q=85"
+                        alt="Artisan dessert">
+                    <div class="gm-overlay"><span>Artisan Desserts</span></div>
+                </div>
+                <div class="gm-item gm-tall"><img
+                        src="https://images.unsplash.com/photo-1567696911980-2eed69a46042?auto=format&fit=crop&w=800&q=85"
+                        alt="Signature cocktails">
+                    <div class="gm-overlay"><span>Signature Cocktails</span></div>
+                </div>
+                <div class="gm-item"><img
+                        src="https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=700&q=85"
+                        alt="Terrace dining">
+                    <div class="gm-overlay"><span>Terrace Dining</span></div>
+                </div>
+                <div class="gm-item"><img
+                        src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=700&q=85"
+                        alt="Premium dish">
+                    <div class="gm-overlay"><span>Premium Plates</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials-section">
+        <div class="testimonials-container">
+            <p class="section-eyebrow">Guest Reviews</p>
+            <h2 class="testimonials-title">Unforgettable Experiences</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                    <p class="testimonial-text">&ldquo;An extraordinary evening from start to finish. The tasting menu
+                        was a genuine work of art &mdash; every course a revelation. DineAura has set a new standard for
+                        fine dining.&rdquo;</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">SL</div>
+                        <div><strong>Sophie Laurent</strong><span>London, UK</span></div>
+                    </div>
+                </div>
+                <div class="testimonial-card testimonial-feature">
+                    <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                    <p class="testimonial-text">&ldquo;The atmosphere is breathtaking, the service impeccable, and the
+                        food simply transcendent. I&apos;ve dined in Paris, Tokyo, and New York &mdash; DineAura belongs
+                        in that same conversation.&rdquo;</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">MR</div>
+                        <div><strong>Marco Rossi</strong><span>Milan, Italy</span></div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                    <p class="testimonial-text">&ldquo;Perfect for our anniversary dinner. The sommelier&apos;s wine
+                        pairing was exceptional and the private dining room felt made for us. We return every year
+                        without fail.&rdquo;</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">AK</div>
+                        <div><strong>Amara Khan</strong><span>Dubai, UAE</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reservation CTA -->
+    <section class="reservation-cta" id="reservation">
+        <div class="reservation-cta-bg"></div>
+        <div class="reservation-cta-scrim"></div>
+        <div class="reservation-cta-content">
+            <p class="section-eyebrow" style="color:#c59d5f">Book Your Table</p>
+            <h2>Ready for an<br>Extraordinary Evening?</h2>
+            <p class="reservation-cta-desc">Reserve your table and let us craft an evening you&apos;ll never forget.
+                Private dining &amp; special events available.</p>
+            <div class="reservation-form">
+                <input type="text" class="res-input" id="resName" placeholder="Full Name" required>
+                <input type="text" class="res-input" id="resContact" placeholder="Email or 10-digit Phone"
+                    title="Please enter a valid email or a 10-digit phone number" oninput="restrictContactInput(this)"
+                    required>
+                <input type="date" class="res-input" id="resDate" min="">
+                <select class="res-input" id="resGuests">
+                    <option value="">Guests</option>
+                    <option value="1">1 Guest</option>
+                    <option value="2">2 Guests</option>
+                    <option value="3">3 Guests</option>
+                    <option value="4">4 Guests</option>
+                    <option value="5">5+ Guests</option>
+                </select>
+                <select class="res-input" id="resTime">
+                    <option value="">Time</option>
+                    <option value="12:00">12:00</option>
+                    <option value="13:00">13:00</option>
+                    <option value="14:00">14:00</option>
+                    <option value="15:00">15:00</option>
+                    <option value="16:00">16:00</option>
+                    <option value="17:00">17:00</option>
+                    <option value="18:00">18:00</option>
+                    <option value="18:30">18:30</option>
+                    <option value="19:00">19:00</option>
+                    <option value="19:30">19:30</option>
+                    <option value="20:00">20:00</option>
+                    <option value="20:30">20:30</option>
+                    <option value="21:00">21:00</option>
+                </select>
+                <button class="res-btn" onclick="handleReservation()">Reserve Now →</button>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <div class="footer-logo">DineAura</div>
+                <p class="footer-tagline">Authentic flavors crafted with passion, served with elegance.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="menu.html">Menu</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4>Contact Us</h4>
+                <p>ðŸ“ 485 Gourmet Square, Downtown District</p>
+                <p>ðŸ“ž +1 (555) 123-4567</p>
+                <p>âœ‰️ reservations@dineaura.com</p>
+                <p>ðŸ• Tueâ€“Sun: 12 PM onwards</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 <span class="footer-brand-name">DineAura</span>. All Rights Reserved. Crafted with ❤️ for
+                fine
+                dining.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script type="module">
+        import { db } from './firebase-config.js';
+        import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        window.handleReservation = async function () {
+            const name = document.getElementById('resName').value.trim();
+            const contact = document.getElementById('resContact').value.trim();
+            const date = document.getElementById('resDate').value;
+            const guests = document.getElementById('resGuests').value;
+            const time = document.getElementById('resTime').value;
+
+            if (!name || !contact || !date || !guests || !time) {
+                alert('Please fill in all reservation details.');
+                return;
+            }
+
+            if (!isValidContact(contact)) {
+                alert('Please enter a valid email address or a 10-digit phone number.');
+                return;
+            }
+
+            const btn = document.querySelector('.res-btn');
+            const originalText = btn.textContent;
+            btn.textContent = 'Reserving...';
+            btn.disabled = true;
+
+            try {
+                await addDoc(collection(db, "reservations"), {
+                    name,
+                    contact,
+                    date,
+                    guests,
+                    time,
+                    status: 'confirmed',
+                    createdAt: serverTimestamp()
+                });
+
+                alert('✓ Reservation confirmed via Firebase! We look forward to seeing you.');
+                location.reload();
+            } catch (error) {
+                console.error("Firestore Error:", error);
+                alert('Failed to book reservation. Please try again.');
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        };
+    </script>
+</body>
+
+</html>

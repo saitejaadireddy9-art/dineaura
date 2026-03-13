@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>DineAura Admin Panel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="dashboard-page admin-page">
+
+    <div id="adminDashboard" class="dashboard admin-dashboard-v2">
+        <aside class="admin-sidebar">
+            <div class="sidebar-brand">
+                <div class="logo">DineAura</div>
+                <span>Admin Panel</span>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-item active" id="adminNavOrders" onclick="showAdminTab('orders', this)">
+                    <span class="icon">&#128203;</span> Live Orders
+                </button>
+                <button class="nav-item" id="adminNavHistory" onclick="showAdminTab('orderHistory', this)">
+                    <span class="icon">&#128338;</span> Order History
+                </button>
+                <button class="nav-item" id="adminNavRes" onclick="showAdminTab('reservations', this)">
+                    <span class="icon">&#128197;</span> Reservations
+                </button>
+                <button class="nav-item" id="adminNavContacts" onclick="showAdminTab('contacts', this)">
+                    <span class="icon">&#128231;</span> Messages
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="admin-profile">
+                    <div class="avatar" id="adminAvatar">A</div>
+                    <div class="info">
+                        <span id="adminNameDisplay">Admin</span>
+                        <span class="role">Manager</span>
+                    </div>
+                </div>
+                <button id="adminLogoutBtn" class="logout-btn">
+                    <span class="icon">&#128682;</span> Logout
+                </button>
+            </div>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-topbar">
+                <h2 id="adminTabTitle">Live Orders</h2>
+            </header>
+
+            <section class="admin-content-area">
+                <!-- Orders Tab -->
+                <div class="admin-panel" id="adminOrdersPanel">
+                    <div id="ordersQueue" class="orders-grid-admin">
+                        <p style="color:#999;text-align:center;padding:40px;grid-column:1/-1;">Loading orders...</p>
+                    </div>
+                </div>
+
+                <!-- History Tab -->
+                <div class="admin-panel" id="adminOrderHistoryPanel" style="display:none">
+                    <div class="filter-row" style="margin-bottom:20px;display:flex;gap:12px;">
+                        <button class="filter-btn active" onclick="filterHistory('all', this)">All</button>
+                        <button class="filter-btn" onclick="filterHistory('delivered', this)">Delivered</button>
+                        <button class="filter-btn" onclick="filterHistory('pending', this)">Pending</button>
+                    </div>
+                    <div id="orderHistoryQueue" class="orders-grid-admin"></div>
+                </div>
+
+                <!-- Reservations Tab -->
+                <div class="admin-panel" id="adminReservationsPanel" style="display:none">
+                    <div id="reservationsQueue" class="orders-grid-admin"></div>
+                </div>
+
+                <!-- Contacts/Messages Tab -->
+                <div class="admin-panel" id="adminContactsPanel" style="display:none">
+                    <div id="contactsQueue" class="orders-grid-admin"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        /* ── Admin Dashboard Logic ── */
+        let allOrdersHistory = [];
+
+        window.showAdminTab = function (tab, btn) {
+            document.querySelectorAll('.admin-panel').forEach(p => p.style.display = 'none');
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+
+            const titles = {
+                'orders': 'Live Orders',
+                'orderHistory': 'Full Order History',
+                'reservations': 'Table Reservations',
+                'contacts': 'Guest Messages'
+            };
+            document.getElementById('adminTabTitle').textContent = titles[tab] || tab;
+
+            const panel = document.getElementById('admin' + tab.charAt(0).toUpperCase() + tab.slice(1) + 'Panel');
+            if (panel) panel.style.display = 'block';
+            if (btn) btn.classList.add('active');
+
+            if (tab === 'orderHistory') loadOrderHistory();
+            if (tab === 'orders') loadAdminDashboard();
+            if (tab === 'reservations') loadAdminReservations();
+            if (tab === 'contacts') loadAdminContacts();
+        };
+
+        async function loadAdminDashboard() {
+            try {
+                const res = await fetch('/api/orders');
+                const orders = res.ok ? await res.json() : [];
+                renderAdminOrders(orders);
+            } catch (e) {
+                document.getElementById('ordersQueue').innerHTML = '<p style="color:#999;text-align:center;padding:40px;">Failed to load orders.</p>';
+            }
+        }
+
+        function renderAdminOrders(orders) {
+            const pending = orders.filter(o => o.status !== 'delivered');
+            const queueHtml = pending.length ? pending.map(o => {
+                const items = o.items.map(i => `<div class="item-row"><span>${i.name} (×${i.qty})</span><span>£${(i.price * i.qty).toFixed(2)}</span></div>`).join('');
+                return `
+                    <div class="order-card-v2">
+                        <div class="header">
+                            <span class="id">#${o.id.slice(-6).toUpperCase()}</span>
+                            <span class="status-badge ${o.status}">${o.status}</span>
+                        </div>
+                        <div class="user-info">
+                            <span class="user-name">${o.user}</span>
+                            <span class="user-id">${o.identifier || 'No ID'}</span>
+                        </div>
+                        <div class="items-list-v2">${items}</div>
+                        <div class="order-total-v2">
+                            <span class="label">Balance Due</span>
+                            <span class="amount">£${o.total.toFixed(2)}</span>
+                        </div>
+                        <div class="order-actions-v2">
+                            ${o.status === 'pending' ? `<button class="btn-ready" onclick="markReady('${o.id}')">Confirm & Ready</button>` : ''}
+                            <button class="btn-done" onclick="completeOrder('${o.id}')">Delivered</button>
+                        </div>
+                    </div>
+                `;
+            }).join('') : '<p style="color:#999;text-align:center;padding:20px;grid-column:1/-1;">No active orders</p>';
+            document.getElementById('ordersQueue').innerHTML = queueHtml;
+        }
+
+        async function loadAdminReservations() {
+            try {
+                const res = await fetch('/api/reservations');
+                const reservations = res.ok ? await res.json() : [];
+                const queue = document.getElementById('reservationsQueue');
+                if (!reservations.length) {
+                    queue.innerHTML = '<p style="color:#999;text-align:center;padding:20px;grid-column:1/-1;">No reservations</p>';
+                    return;
+                }
+                queue.innerHTML = reservations.map(r => `
+                    <div class="order-card-v2">
+                        <div class="header">
+                            <span class="id">RES-${r.id.slice(-4)}</span>
+                            <span class="status-badge ready">Confirmed</span>
+                        </div>
+                        <div class="user-info">
+                            <span class="user-name">${r.name}</span>
+                            <span class="user-id">${r.email}</span>
+                        </div>
+                        <div class="items-list-v2">
+                            <div class="item-row"><span>Date</span><span>${r.date}</span></div>
+                            <div class="item-row"><span>Time</span><span>${r.time}</span></div>
+                            <div class="item-row"><span>Guests</span><span>${r.guests}</span></div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) { }
+        }
+
+        async function loadAdminContacts() {
+            try {
+                const res = await fetch('/api/contact');
+                const contacts = res.ok ? await res.json() : [];
+                const queue = document.getElementById('contactsQueue');
+                if (!contacts.length) {
+                    queue.innerHTML = '<p style="color:#999;text-align:center;padding:20px;grid-column:1/-1;">No messages</p>';
+                    return;
+                }
+                queue.innerHTML = contacts.map(c => `
+                    <div class="order-card-v2">
+                        <div class="header">
+                            <span class="id">MSG-${c.id.slice(-4)}</span>
+                            <span class="status-badge pending">New</span>
+                        </div>
+                        <div class="user-info">
+                            <span class="user-name">${c.name}</span>
+                            <span class="user-id">${c.email}</span>
+                        </div>
+                        <p style="font-size:14px; color:var(--text-secondary); margin-bottom:15px;"><strong>Subject:</strong> ${c.subject || 'No Subject'}</p>
+                        <p style="font-size:13px; color:var(--text-muted); line-height:1.5;">${c.message}</p>
+                    </div>
+                `).join('');
+            } catch (e) { }
+        }
+
+        async function loadOrderHistory() {
+            try {
+                const res = await fetch('/api/orders');
+                allOrdersHistory = res.ok ? await res.json() : [];
+                renderOrderHistory(allOrdersHistory);
+            } catch (e) { }
+        }
+
+        function renderOrderHistory(ordersToShow) {
+            const queue = document.getElementById('orderHistoryQueue');
+            if (!ordersToShow.length) {
+                queue.innerHTML = '<p style="color:#999;text-align:center;padding:40px;grid-column:1/-1;">No orders found.</p>';
+                return;
+            }
+            const sorted = [...ordersToShow].sort((a, b) => new Date(b.time) - new Date(a.time));
+            queue.innerHTML = sorted.map(o => {
+                const items = o.items.map(i => `<div class="item-row"><span>${i.name} (×${i.qty})</span><span>£${(i.price * i.qty).toFixed(2)}</span></div>`).join('');
+                const timeStr = new Date(o.time).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                return `
+                    <div class="order-card-v2">
+                        <div class="header">
+                            <span class="id">#${o.id.slice(-6).toUpperCase()}</span>
+                            <span class="status-badge ${o.status}">${o.status}</span>
+                        </div>
+                        <div class="user-info">
+                            <span class="user-name">${o.user}</span>
+                            <span class="user-id">Table/Room: ${o.identifier || 'N/A'}</span>
+                        </div>
+                        <div class="items-list-v2">${items}</div>
+                        <div class="order-total-v2">
+                            <span class="label">🕐 ${timeStr}</span>
+                            <span class="amount">£${o.total.toFixed(2)}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        window.filterHistory = function (status, btn) {
+            document.querySelectorAll('.filter-row .filter-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            const filtered = status === 'all' ? allOrdersHistory : allOrdersHistory.filter(o => o.status === status);
+            renderOrderHistory(filtered);
+        };
+
+        window.markReady = async function (orderId) {
+            try {
+                await fetch('/api/orders/' + orderId, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'ready' })
+                });
+                loadAdminDashboard();
+            } catch (e) { }
+        };
+
+        window.completeOrder = async function (orderId) {
+            try {
+                await fetch('/api/orders/' + orderId, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'delivered' })
+                });
+                loadAdminDashboard();
+            } catch (e) { }
+        };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Check if admin is logged in
+            const checkUser = setInterval(() => {
+                if (window.currentUser) {
+                    clearInterval(checkUser);
+                    if (currentUser !== 'admin') {
+                        window.location.href = 'dashboard.html';
+                        return;
+                    }
+                    loadAdminDashboard();
+                    document.getElementById('adminAvatar').textContent = currentUser.charAt(0).toUpperCase();
+                    document.getElementById('adminNameDisplay').textContent = currentUser;
+                }
+            }, 100);
+
+            const adminLogout = document.getElementById('adminLogoutBtn');
+            if (adminLogout) {
+                adminLogout.onclick = async function () {
+                    try { await fetch('/api/auth/logout'); } catch (e) { }
+                    sessionStorage.clear(); window.location.href = 'index.html';
+                };
+            }
+        });
+    </script>
+</body>
+
+</html>

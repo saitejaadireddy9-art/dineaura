@@ -1,0 +1,23 @@
+{
+    "name": "dineaura",
+    "version": "1.0.0",
+    "description": "DineAura — Fine Dining Restaurant Fullstack Web App",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js",
+        "dev": "node server.js"
+    },
+    "dependencies": {
+        "bcryptjs": "^2.4.3",
+        "express": "^4.18.2",
+        "express-session": "^1.17.3"
+    },
+    "keywords": [
+        "restaurant",
+        "dineaura",
+        "express",
+        "nodejs"
+    ],
+    "author": "DineAura Team",
+    "license": "ISC"
+}

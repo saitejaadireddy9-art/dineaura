@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Login — DineAura Fine Dining</title>
+    <meta name="description" content="Sign in or register to your DineAura account.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ── Reset & Base ── */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0f;
+            color: #f0f0f0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── Layout ── */
+        .auth-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 100vh;
+        }
+
+        /* ── LEFT: Visual Panel ── */
+        .auth-visual {
+            position: relative;
+            overflow: hidden;
+            background:
+                linear-gradient(160deg, rgba(10, 10, 15, 0.6) 0%, rgba(18, 18, 26, 0.8) 100%),
+                url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1200&q=85') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 40px 48px;
+        }
+
+        .auth-visual::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.12) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .visual-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, #e8c547, #d4af37, #b8962e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 1;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .visual-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .visual-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 44px;
+            font-weight: 800;
+            line-height: 1.15;
+            background: linear-gradient(135deg, #fff 40%, #f5c518 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 18px;
+        }
+
+        .visual-content p {
+            color: rgba(255, 255, 255, 0.72);
+            font-size: 15.5px;
+            line-height: 1.75;
+            max-width: 340px;
+        }
+
+        .visual-badges {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 36px;
+        }
+
+        .badge {
+            background: rgba(245, 197, 24, 0.10);
+            border: 1px solid rgba(245, 197, 24, 0.25);
+            border-radius: 50px;
+            padding: 7px 17px;
+            font-size: 12.5px;
+            color: #f5c518;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .visual-footer {
+            position: relative;
+            z-index: 1;
+            font-size: 12.5px;
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        /* ── RIGHT: Form Panel ── */
+        .auth-form-panel {
+            background: #0a0a0f;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 56px;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .form-box {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* ── Close button (popup mode) ── */
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, color 0.2s;
+            text-decoration: none;
+        }
+
+        .close-btn:hover {
+            background: rgba(212, 175, 55, 0.15);
+            color: #d4af37;
+            border-color: rgba(212, 175, 55, 0.35);
+        }
+
+        /* ── Form Header ── */
+        .form-header {
+            margin-bottom: 36px;
+        }
+
+        .form-header .eyebrow {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+            color: #d4af37;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .form-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 800;
+            color: #f0f0f0;
+            line-height: 1.2;
+        }
+
+        .form-header p {
+            margin-top: 10px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* ── Tabs ── */
+        .tab-row {
+            display: flex;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 4px;
+            margin-bottom: 32px;
+            gap: 4px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px 0;
+            background: transparent;
+            border: none;
+            border-radius: 7px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+            cursor: pointer;
+            transition: background 0.25s, color 0.25s;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #d4af37, #e8c547);
+            color: #0a0a0f;
+            box-shadow: 0 4px 16px rgba(212, 175, 55, 0.4);
+        }
+
+        /* ── Floating Label Inputs ── */
+        .field {
+            position: relative;
+            margin-bottom: 22px;
+        }
+
+        /* ── Buttons ── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #e8c547 0%, #d4af37 100%);
+            color: #0a0a0f;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .btn-primary:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            filter: grayscale(0.5);
+        }
+
+        /* ── Loader ── */
+        .loader {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(10, 10, 15, 0.2);
+            border-top-color: #0a0a0f;
+            border-radius: 50%;
+            display: none;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading .loader {
+            display: inline-block;
+        }
+
+        .loading .btn-text-main {
+            display: none;
+        }
+
+        .field input,
+        .field select {
+            width: 100%;
+            padding: 16px 14px 6px;
+            background: rgba(20, 20, 30, 0.6);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            border-radius: 12px;
+            color: #f0f0f0;
+            font-family: 'Inter', sans-serif;
+            font-size: 14.5px;
+            transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            backdrop-filter: blur(10px);
+        }
+
+        .field select option {
+            background: #12121a;
+        }
+
+        .field label {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: #6b6b7b;
+            pointer-events: none;
+            transition: top 0.2s, font-size 0.2s, color 0.2s;
+        }
+
+        .field input:focus,
+        .field select:focus {
+            border-color: #d4af37;
+            background: rgba(212, 175, 55, 0.08);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+        }
+
+        .field input:focus~label,
+        .field input:not(:placeholder-shown)~label,
+        .field select:focus~label,
+        .field.has-value label {
+            top: 8px;
+            transform: none;
+            font-size: 10.5px;
+            color: #d4af37;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .field input::placeholder {
+            color: transparent;
+        }
+
+        .field.inline-label input,
+        .field.inline-label select {
+            padding: 14px;
+        }
+
+        .field.inline-label label {
+            display: none;
+        }
+
+        /* Divider row */
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* ── Links ── */
+        .form-links {
+            display: flex;
+            justify-content: flex-end;
+            gap: 16px;
+            margin-top: -6px;
+            margin-bottom: 6px;
+            font-size: 12.5px;
+        }
+
+        .form-links a {
+            color: #d4af37;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .form-links a:hover {
+            color: #e8c547;
+            text-decoration: underline;
+        }
+
+        /* ── Submit Button ── */
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #d4af37 0%, #e8c547 100%);
+            color: #0a0a0f;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 0.4px;
+            transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+            margin-top: 10px;
+            box-shadow: 0 6px 24px rgba(212, 175, 55, 0.35);
+        }
+
+        .submit-btn:hover {
+            opacity: 0.92;
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 10px 32px rgba(212, 175, 55, 0.45);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Cancel link */
+        .cancel-link {
+            display: block;
+            text-align: center;
+            margin-top: 16px;
+            font-size: 13px;
+            color: #444;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .cancel-link:hover {
+            color: #888;
+        }
+
+        /* ── Note ── */
+        .demo-note {
+            margin-top: 26px;
+            padding: 14px 18px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.03));
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 10px;
+            font-size: 12.5px;
+            color: #8a8a9a;
+            line-height: 1.6;
+            backdrop-filter: blur(10px);
+        }
+
+        .demo-note strong {
+            color: #d4af37;
+        }
+
+        /* ── Form Panes ── */
+        .form-pane {
+            display: none;
+        }
+
+        .form-pane.active {
+            display: block;
+        }
+
+        /* ── Recovery pane ── */
+        .recovery-pane {
+            display: none;
+        }
+
+        .recovery-pane.active {
+            display: block;
+        }
+
+        .recovery-pane h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            color: #d4af37;
+            margin-bottom: 8px;
+        }
+
+        .recovery-pane>p {
+            color: #888;
+            font-size: 13.5px;
+            margin-bottom: 24px;
+            line-height: 1.65;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #555;
+            text-decoration: none;
+            margin-bottom: 24px;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+
+        .back-link:hover {
+            color: #d4af37;
+        }
+
+        /* ── Separator ── */
+        .sep {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 16px 0;
+            color: #333;
+            font-size: 12px;
+        }
+
+        .sep::before,
+        .sep::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 820px) {
+            .auth-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .auth-visual {
+                display: none;
+            }
+
+            .auth-form-panel {
+                padding: 48px 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .auth-form-panel {
+                padding: 40px 20px;
+            }
+
+            .field-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="auth-wrapper">
+
+        <!-- LEFT — Visual side -->
+        <div class="auth-visual">
+            <a href="index.html" class="visual-logo">DineAura</a>
+
+            <div class="visual-content">
+                <h2>Fine Dining,<br>Elevated Experience</h2>
+                <p>Sign in to place orders, track your table's requests, and enjoy seamless service — all from one
+                    place.</p>
+                <div class="visual-badges">
+                    <span class="badge">🏆 Michelin Recommended</span>
+                    <span class="badge">🌱 Farm to Table</span>
+                    <span class="badge">🍷 300+ Wines</span>
+                </div>
+            </div>
+
+            <div class="visual-footer">© 2026 DineAura. All rights reserved.</div>
+        </div>
+
+        <!-- RIGHT — Form side -->
+        <div class="auth-form-panel">
+            <a href="index.html" class="close-btn" title="Back to homepage">✕</a>
+
+            <div class="form-box">
+                <div class="form-header">
+                    <div class="eyebrow">Welcome back</div>
+                    <h1>Sign into your account</h1>
+                    <p id="regPrompt">Don't have one? <a href="#" onclick="switchTab('register');return false;"
+                            style="color:#c59d5f;text-decoration:none;font-weight:600;">Create account</a></p>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tab-row">
+                    <button class="tab-btn active" id="tab-signin" onclick="switchTab('signin')">Sign In</button>
+                    <button class="tab-btn" id="tab-register" onclick="switchTab('register')">Register</button>
+                </div>
+
+                <!-- ─── SIGN IN PANE ─── -->
+                <div class="form-pane active" id="pane-signin">
+                    <form id="loginForm" onsubmit="handleLogin(event)">
+                        <div class="field">
+                            <input id="username" type="text" name="username" placeholder="Username"
+                                autocomplete="username" required>
+                            <label for="username">Username</label>
+                        </div>
+                        <div class="field">
+                            <input id="password" type="password" name="password" placeholder="Password"
+                                autocomplete="current-password" required>
+                            <label for="password">Password</label>
+                        </div>
+                        <div class="form-links">
+                            <a href="#" id="forgotUser" onclick="openRecovery('userid');return false;">Forgot
+                                username?</a>
+                            <a href="#" id="forgotPass" onclick="openRecovery('password');return false;">Forgot
+                                password?</a>
+                        </div>
+                        <button type="submit" class="submit-btn">Sign In →</button>
+                    </form>
+
+                    <div class="demo-note">
+                        <strong>Demo:</strong> username <strong>admin</strong> · password
+                        <strong>password123</strong><br>
+                        Or register a new account using the Register tab.
+                    </div>
+                </div>
+
+                <!-- ─── REGISTER PANE ─── -->
+                <div class="form-pane" id="pane-register">
+                    <form id="registerForm" onsubmit="handleRegister(event)">
+                        <div class="field">
+                            <input id="regUsername" type="text" placeholder="Username" required>
+                            <label for="regUsername">Choose a username</label>
+                        </div>
+                        <div class="field">
+                            <input id="regContact" type="text" placeholder="Email or 10-digit Phone"
+                                title="Please enter a valid email or a 10-digit phone number"
+                                oninput="restrictContactInput(this)" required>
+                            <label for="regContact">Email or 10-digit Phone</label>
+                        </div>
+
+                        <div class="sep">Dining details</div>
+
+                        <div class="field-row">
+                            <div class="field inline-label">
+                                <select id="regType">
+                                    <option value="dine">🍽 Dine-In (Table)</option>
+                                    <option value="room">🛏 Hotel Room</option>
+                                </select>
+                                <label>Type</label>
+                            </div>
+                            <div class="field">
+                                <input id="regIdentifier" type="text" placeholder="Table / Room #" required>
+                                <label for="regIdentifier">Table / Room #</label>
+                            </div>
+                        </div>
+
+                        <div class="sep">Create password</div>
+
+                        <div class="field">
+                            <input id="regPassword" type="password" placeholder="Password" required>
+                            <label for="regPassword">Password</label>
+                        </div>
+                        <div class="field">
+                            <input id="regPassword2" type="password" placeholder="Confirm Password" required>
+                            <label for="regPassword2">Confirm password</label>
+                        </div>
+
+                        <button type="submit" class="submit-btn">Create Account →</button>
+                    </form>
+                    <a href="#" class="cancel-link" onclick="switchTab('signin');return false;">← Back to Sign In</a>
+                </div>
+
+                <!-- ─── RECOVERY PANE ─── -->
+                <div class="recovery-pane" id="pane-recovery">
+                    <a class="back-link" onclick="closeRecovery();return false;" href="#">← Back to Sign In</a>
+                    <h3>Account Recovery</h3>
+                    <p id="recoveryDesc">Enter your email address and we'll send you recovery instructions.</p>
+                    <div class="field">
+                        <input id="recoveryInput" type="email" placeholder="Email address" required>
+                        <label for="recoveryInput">Email address</label>
+                    </div>
+                    <button class="submit-btn" onclick="sendRecovery()">Send Instructions →</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ── Validation Helpers ──
+        function isValidContact(value) {
+            const val = (value || '').trim();
+            if (!val) return false;
+            // Check if it's an email
+            if (val.includes('@')) {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+            }
+            // Check if it's a 10-digit phone number
+            const numeric = val.replace(/\D/g, '');
+            return numeric.length === 10;
+        }
+
+        function restrictContactInput(input) {
+            const val = input.value;
+            // If it starts looking like a phone number (just digits)
+            if (/^\d+$/.test(val.replace(/\s/g, ''))) {
+                const cleaned = val.replace(/\D/g, '');
+                if (cleaned.length > 10) {
+                    input.value = cleaned.slice(0, 10);
+                }
+            }
+        }
+
+        // ── Tab switching ──
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.form-pane').forEach(p => p.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            document.getElementById('pane-' + tab).classList.add('active');
+
+            const h1 = document.querySelector('.form-header h1');
+            const eyebrow = document.querySelector('.form-header .eyebrow');
+            if (tab === 'signin') {
+                eyebrow.textContent = 'Welcome back';
+                h1.textContent = 'Sign into your account';
+                document.getElementById('regPrompt').style.display = 'block';
+            } else {
+                eyebrow.textContent = 'New here?';
+                h1.textContent = 'Create your account';
+                document.getElementById('regPrompt').style.display = 'none';
+            }
+            document.getElementById('pane-recovery').classList.remove('active');
+        }
+
+        // ── Recovery ──
+        function openRecovery(mode) {
+            document.querySelectorAll('.form-pane').forEach(p => p.classList.remove('active'));
+            document.getElementById('pane-recovery').classList.add('active');
+            const desc = document.getElementById('recoveryDesc');
+            desc.textContent = mode === 'password'
+                ? "Enter your email address and we'll send you a link to reset your password."
+                : "Enter your email address and we'll remind you of your username.";
+            document.querySelector('.form-header h1').textContent = 'Recover your account';
+            document.querySelector('.form-header .eyebrow').textContent = 'Account recovery';
+        }
+
+        function closeRecovery() {
+            document.getElementById('pane-recovery').classList.remove('active');
+            switchTab('signin');
+        }
+
+        function sendRecovery() {
+            const val = document.getElementById('recoveryInput').value.trim();
+            if (!val) { alert('Please enter your email address.'); return; }
+            alert('If an account exists for ' + val + ', recovery instructions have been sent (demo).');
+            closeRecovery();
+        }
+
+        // ── Login ──
+        // NOTE: actual call goes to Firebase via inline module script below.
+        //       This stub receives the result via window.__fbLoginResult set by the module.
+        async function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.classList.add('loading');
+            btn.disabled = true;
+            btn.textContent = 'Signing in…';
+
+            // Try Firebase first
+            try {
+                const { fsLogin } = await import('./firebase-service.js');
+                const result = await fsLogin({ username, password });
+                if (result.ok) {
+                    sessionStorage.setItem('loginUser', result.user.username);
+                    sessionStorage.setItem('loginType', result.user.type);
+                    sessionStorage.setItem('loginIdentifier', result.user.identifier || '');
+                    window.location.href = 'index.html';
+                    return;
+                } else {
+                    // Wrong password / user not found in Firestore — try server API
+                    throw new Error(result.error);
+                }
+            } catch (fbErr) {
+                // Fall back to Express API
+                try {
+                    const res = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, password })
+                    });
+                    const data = await res.json();
+                    if (res.ok) {
+                        sessionStorage.setItem('loginUser', username);
+                        sessionStorage.setItem('loginType', data.user?.type || 'dine');
+                        sessionStorage.setItem('loginIdentifier', data.user?.identifier || '');
+                        window.location.href = 'index.html';
+                        return;
+                    } else {
+                        throw new Error(data.error || 'Invalid credentials');
+                    }
+                } catch (apiErr) {
+                    // Last resort: localStorage demo mode
+                    const users = JSON.parse(localStorage.getItem('demo_users') || '{}');
+                    const u = users[username];
+                    if (u && u.password === password) {
+                        sessionStorage.setItem('loginUser', username);
+                        sessionStorage.setItem('loginType', u.type || 'dine');
+                        sessionStorage.setItem('loginIdentifier', u.identifier || '');
+                        window.location.href = 'index.html';
+                        return;
+                    }
+                    shakeForm();
+                    alert(apiErr.message || 'Invalid credentials.');
+                }
+            }
+
+            btn.classList.remove('loading');
+            btn.disabled = false;
+            btn.textContent = 'Sign In →';
+        }
+
+        // ── Register ──
+        async function handleRegister(e) {
+            e.preventDefault();
+            const username = document.getElementById('regUsername').value.trim();
+            const contact = document.getElementById('regContact').value.trim();
+            const type = document.getElementById('regType').value;
+            const identifier = document.getElementById('regIdentifier').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const password2 = document.getElementById('regPassword2').value;
+            const btn = e.target.querySelector('button[type="submit"]');
+
+            if (password !== password2) { alert('Passwords do not match.'); return; }
+            if (password.length < 6) { alert('Password must be at least 6 characters.'); return; }
+
+            btn.classList.add('loading');
+            btn.disabled = true;
+            btn.textContent = 'Creating account…';
+
+            // 1️⃣ Try Firebase Firestore
+            try {
+                const { fsRegister } = await import('./firebase-service.js');
+                const result = await fsRegister({ username, contact, password, type, identifier });
+                if (result.ok) {
+                    alert('✅ Account created in Firebase!\nYou can now sign in.');
+                    switchTab('signin');
+                    document.getElementById('username').value = username;
+                    btn.textContent = 'Create Account →';
+                    btn.disabled = false;
+                    return;
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (fbErr) {
+                // 2️⃣ Fall back to Express API
+                try {
+                    const res = await fetch('/api/auth/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, email: contact, password, type, identifier })
+                    });
+                    const data = await res.json();
+                    if (res.ok) {
+                        alert('Account created! You can now sign in.');
+                        switchTab('signin');
+                        document.getElementById('username').value = username;
+                        btn.textContent = 'Create Account →';
+                        btn.disabled = false;
+                        return;
+                    } else {
+                        throw new Error(data.error || 'Registration failed');
+                    }
+                } catch (apiErr) {
+                    // 3️⃣ Last resort: localStorage
+                    const users = JSON.parse(localStorage.getItem('demo_users') || '{}');
+                    if (users[username]) {
+                        alert('Username already taken.');
+                    } else {
+                        users[username] = { contact, password, type, identifier };
+                        localStorage.setItem('demo_users', JSON.stringify(users));
+                        alert('Account created (offline mode).\nYou can now sign in.');
+                        switchTab('signin');
+                        document.getElementById('username').value = username;
+                    }
+                }
+            }
+
+            btn.textContent = 'Create Account →';
+            btn.disabled = false;
+        }
+
+
+        // ── Shake animation on failed login ──
+        function shakeForm() {
+            const box = document.querySelector('.form-box');
+            box.style.transition = 'transform 0.07s';
+            const seq = [6, -6, 5, -5, 3, 0];
+            seq.forEach((px, i) => setTimeout(() => { box.style.transform = `translateX(${px}px)`; }, i * 70));
+        }
+
+        // ── Floating label fix for autofill ──
+        document.querySelectorAll('.field input, .field select').forEach(el => {
+            el.addEventListener('input', () => {
+                el.parentElement.classList.toggle('has-value', el.value.length > 0);
+            });
+        });
+
+        // ── Pre-select tab from URL ──
+        const urlTab = new URLSearchParams(window.location.search).get('tab');
+        if (urlTab === 'register') switchTab('register');
+    </script>
+
+    <!-- firebase-config.js not needed separately; firebase-service.js self-initialises -->
+</body>
+
+</html>
